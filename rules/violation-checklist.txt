@@ -18,4 +18,4 @@ php	E	Code standard	/dd\(/ && !/\/\/.*dd\(/
 php	E	Code standard	/print_r\(/ && !/\/\/.*print_r\(/
 java	E	Code standard	/System.out.print/
 
-java	W	confidential information	/".{32,}"/
+java	W	Unknown token	/".{32,}"/
