@@ -7,8 +7,8 @@ if sh -c ": >/dev/tty" >/dev/null 2>/dev/null; then
 	exec </dev/tty
 fi
 
-if [ $(date -r .git/hooks/violation-checklist.txt "+%m-%d-%Y") != $(date "+%m-%d-%Y") ]; then
- 	curl -o .git/hooks/violation-checklist.txt https://git.bouygues-construction.com/bycnit-vn/git-hook-rules/-/raw/main/hooks/violation-checklist.txt
+if [ $(date -r .git/rules/violation-checklist.txt "+%m-%d-%Y") != $(date "+%m-%d-%Y") ]; then
+ 	curl -s --cacert .git/ssl/raw.githubusercontent.com.crt -o .git/rules/violation-checklist.txt https://raw.githubusercontent.com/bouygues-construction-public/git-hook-rules/refs/heads/main/hooks/violation-checklist.txt
 fi
 
 ROOT_DIR="$(pwd)/"
@@ -16,7 +16,7 @@ ROOT_DIR="$(pwd)/"
 ERRORS_LOGS=""
 WARNING_LOGS=""
 
-readarray -t RULE_LINES <.git/hooks/violation-checklist.txt
+readarray -t RULE_LINES <.git/rules/violation-checklist.txt
 
 while read file; do
 
