@@ -6,10 +6,10 @@ properties	E	confidential information	/password\s*=\s*[^[:space:]]+/ && !/[[:spa
 properties	E	confidential information	/secret\s*=\s*[^[:space:]]+/ && !/[[:space:]]{0,}\$\{.*\}/
 yml	E	confidential information	/password\s*:\s*[^[:space:]]+/ && !/[[:space:]]{0,}\$\{.*\}/
 yml	E	confidential information	/secret\s*:\s*[^[:space:]]+/ && !/[[:space:]]{0,}\$\{.*\}/
-yml	E	confidential information	/password\s*=\s*[^\'"]{3,}[\'"]\s*/
-yml	E	confidential information	/secrets\s*=\s*[^\'"]{3,}[\'"]\s*/
+yml	E	confidential information	/password\s*=\s*[^[:space:]]+/ && !/[[:space:]]{0,}\$\{.*\}/
+yml	E	confidential information	/secret\s*=\s*[^[:space:]]+/ && !/[[:space:]]{0,}\$\{.*\}/
 php	E	confidential information	/[\'"][A-Z_]+PASSWORD[\'"]\s*[(,)(=>)]\s*[\'"][^\'"]+[\'"]\s*/
-php	E	confidential information	/[\'"][A-Z_]+PASSWORD[\'"]\s*=>\s*[\'"][^\'"]+[\'"]\s*/
+php	E	confidential information	/[\'"]PASSWORD[\'"]\s*=>\s*[\'"][^\'"]+[\'"]\s*/
 
 ## Check logic code
 
