@@ -1,0 +1,97 @@
+#!/bin/bash
+
+# Check if /dev/tty is available
+INTERACTIVE=0
+if sh -c ": >/dev/tty" >/dev/null 2>/dev/null; then
+	INTERACTIVE=1
+	exec </dev/tty
+fi
+
+if [ $(date -r .git/hooks/violation-checklist.txt "+%m-%d-%Y") != $(date "+%m-%d-%Y") ]; then
+ 	curl -o .git/hooks/violation-checklist.txt https://git.bouygues-construction.com/bycnit-vn/git-hook-rules/-/raw/main/hooks/violation-checklist.txt
+fi
+
+ROOT_DIR="$(pwd)/"
+
+ERRORS_LOGS=""
+WARNING_LOGS=""
+
+readarray -t RULE_LINES <.git/hooks/violation-checklist.txt
+
+while read file; do
+
+	FILE_ERROR=""
+	FILE_WARNING=""
+
+	for line in "${RULE_LINES[@]}"; do
+
+		IFS=$'\t'
+		ruleArr=($line)
+
+		if [ ${#ruleArr[@]} -lt 4 ]; then
+			continue
+		fi
+
+		EXTENSION=$(echo "$file" | grep -E ".${ruleArr[0]}$")
+
+		if [ "$EXTENSION" != "" ]; then
+
+			PATTERN=$(echo ${ruleArr[3]} | sed 's/\r//g')
+			DIFF=$(git diff HEAD "$file" | tail +6 | grep '^\+' | sed -e 's/^\+//')
+
+			ERRORS=$(echo "$DIFF" | awk -v IGNORECASE=1 "$PATTERN")
+
+			if [ "$ERRORS" != "" ]; then
+				if [ "${ruleArr[1]}" == "E" ]; then
+					FILE_ERROR="$FILE_ERROR\n$ERRORS"
+				else
+					FILE_WARNING="$FILE_WARNING\n$ERRORS"
+				fi
+			fi
+
+		fi
+	done
+
+	if [ "$FILE_ERROR" != "" ]; then
+		ERRORS_LOGS="$ERRORS_LOGS\n\nFile: $file\n$FILE_ERROR"
+	fi
+	if [ "$FILE_WARNING" != "" ]; then
+		WARNING_LOGS="$WARNING_LOGS\n\nFile: $file\n$FILE_WARNING"
+	fi
+
+done < <(git diff --staged --name-only --diff-filter=ACM --no-color --unified=0)
+
+if [ "$INTERACTIVE" == "0" ]; then
+	if [ "$ERRORS_LOGS" != "" ] || [ "$WARNING_LOGS" != "" ]; then
+		echo "There are some code snippets that violate data security rules, please check the commit log to fix them. You should commit code using CLI"
+		echo -e "$ERRORS_LOGS\n"
+		if [ "$WARNING_LOGS" != "" ]; then
+			echo -e ".The warning code snippets:"
+			echo -e "$WARNING_LOGS\n"
+		fi
+		exit 1
+	fi
+else
+	if [ "$ERRORS_LOGS" != "" ]; then
+		echo "There are some code snippets that violate data security rules:"
+		echo -e "$ERRORS_LOGS\n"
+		if [ "$WARNING_LOGS" != "" ]; then
+			echo -e "...and the warning code snippets:"
+			echo -e "$WARNING_LOGS\n"
+		fi
+		exit 1
+	else
+		if [ "$WARNING_LOGS" != "" ]; then
+			echo "There are some code snippets that violate data security rules:"
+			echo -e "$WARNING_LOGS\n"
+			read -p "Do you want to continue commit code ? " -n 1 -r
+			if [[ $REPLY =~ ^[Yy]$ ]]; then
+				echo "\nCommitting code..."
+			else
+				echo "\nYou canceled the commit."
+				exit 1
+			fi
+		fi
+	fi
+fi
+

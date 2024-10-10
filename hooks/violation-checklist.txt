@@ -1,0 +1,21 @@
+#  List of information security violations
+
+## Check configurations
+
+properties	E	confidential information	/password\s*=\s*[^[:space:]]+/ && !/[[:space:]]{0,}\$\{.*\}/
+properties	E	confidential information	/secret\s*=\s*[^[:space:]]+/ && !/[[:space:]]{0,}\$\{.*\}/
+yml	E	confidential information	/password\s*:\s*[^[:space:]]+/ && !/[[:space:]]{0,}\$\{.*\}/
+yml	E	confidential information	/secret\s*:\s*[^[:space:]]+/ && !/[[:space:]]{0,}\$\{.*\}/
+yml	E	confidential information	/password\s*=\s*[^\'"]{3,}[\'"]\s*/
+yml	E	confidential information	/secrets\s*=\s*[^\'"]{3,}[\'"]\s*/
+php	E	confidential information	/[\'"][A-Z_]+PASSWORD[\'"]\s*[(,)(=>)]\s*[\'"][^\'"]+[\'"]\s*/
+php	E	confidential information	/[\'"][A-Z_]+PASSWORD[\'"]\s*=>\s*[\'"][^\'"]+[\'"]\s*/
+
+## Check logic code
+
+php	E	Code standard	/var_dump\(/ && !/\/\/.*var_dump\(/
+php	E	Code standard	/dd\(/ && !/\/\/.*dd\(/
+php	E	Code standard	/print_r\(/ && !/\/\/.*print_r\(/
+java	E	Code standard	/System.out.print/
+
+java	W	confidential information	/".{32,}"/
