@@ -22,7 +22,7 @@ Now, you can clone a new project for testing:
 git clone <your-new-project-url>
 ```
 
-Then, check the `.git/hooks` directory. You will find the `pre-commit` hook file and the `violation-checklist.txt` rule file.
+Then, check the `.git/hooks` directory. You will find the `pre-commit` hook file.
 
 ## For exist repositories
 For existing repositories on your computer, copy folders into `hooks` folder to each repository's `.git/hooks` directory.
