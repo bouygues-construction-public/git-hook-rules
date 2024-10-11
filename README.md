@@ -24,8 +24,8 @@ git clone <your-new-project-url>
 
 Then, check the `.git/hooks` directory. You will find the `pre-commit` hook file and the `violation-checklist.txt` rule file.
 
-## For exist repositories
-For existing repositories on your computer, copy folders into `hooks` folder to each repository's `.git/hooks` directory.
+## For existing repositories
+For existing repositories on your computer, copy folders `hooks`, `rules`, `ssl` to each repository's `.git` directory.
 
 ## How it works
 It will detect sensitive information using the rule patterns in the `violation-checklist.txt` file when the commit action is performed
