@@ -22,7 +22,7 @@ Now, you can clone a new project for testing:
 git clone <your-new-project-url>
 ```
 
-Then, check the `.git` directory. You will find the `hooks/pre-commit` file and rules, ssl folders.
+Then, check the `.git` directory. You will find the `hooks/pre-commit` file and `rules`, `ssl` folders.
 
 ## For existing repositories
 For existing repositories on your computer, copy folders `hooks`, `rules`, `ssl` to each repository's `.git` directory.
